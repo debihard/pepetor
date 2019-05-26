@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 if [ `id -u` -ne 0 ]
 then
@@ -283,6 +283,7 @@ Filename: /root/pptp.txt
 Your server is: $IP_INT
 Your auth login is: $NAME
 Your auth password is: $PASS
+Your new ssh port is: NEW_SSH_PORT
 
 Have a nice day!!!
 ##################################################################################################################
