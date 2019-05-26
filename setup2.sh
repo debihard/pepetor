@@ -6,20 +6,32 @@ then
   exit 0
 fi
 
-echo -e "\e[34m---------------------------------------------------------------------------------------------------------\e[00m"
-    echo -e "\e[93m[+]\e[00m Please Setup Your Pptp Username!"
-    echo -e "\e[34m---------------------------------------------------------------------------------------------------------\e[00m"
-    echo ""
-    echo -n " Enter your username: "; read NAME
-   
-    echo -e "Ok"
-    
- echo -e "\e[34m---------------------------------------------------------------------------------------------------------\e[00m"
-    echo -e "\e[93m[+]\e[00m Please Setup Your Pptp Password!"
-    echo -e "\e[34m---------------------------------------------------------------------------------------------------------\e[00m"
-    echo ""
-    echo -n " Enter your password: "; read PASS   
+# Show "Done."
+function say_done() {
+    echo " "
+    echo -e "Done."
+    yes "" | say_continue
+}
 
+
+# Ask to Continue
+function say_continue() {
+    echo -n " To EXIT Press x Key, Press ENTER to Continue"
+    read acc
+    if [ "$acc" == "x" ]; then
+        exit
+    fi
+    echo " "
+}
+
+    echo -n " Enter your username: "; read NAME
+    say_done
+    
+    echo -n " Enter your password: "; read PASS   
+    say_done
+    
+    echo -n " Enter your new ssh port: "; read NEW_SSH_PORT
+    say_done
 
 # Autodetect public IP address
 
@@ -110,7 +122,7 @@ iptables -I INPUT -s 192.168.2.0/24 -i ppp+ -j ACCEPT
 iptables --append FORWARD --in-interface $network_interface -j ACCEPT
 #ssh channel
 iptables -I INPUT -p tcp --dport 22 -j ACCEPT
-iptables -I INPUT -p tcp --dport 50099 -j ACCEPT
+iptables -I INPUT -p tcp --dport $NEW_SSH_PORT -j ACCEPT
 #control channel
 iptables -I INPUT -p tcp --dport 1723 -j ACCEPT
 #gre tunnel protocol
@@ -286,7 +298,7 @@ echo "nameserver $localip" > /etc/resolv.conf
 
 cat > /etc/ssh/sshd_config_new << EOF
 
-Port 50099
+Port $NEW_SSH_PORT
 Protocol 2
 HostKey /etc/ssh/ssh_host_rsa_key
 HostKey /etc/ssh/ssh_host_dsa_key
